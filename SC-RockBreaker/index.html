@@ -72,6 +72,7 @@
 
     .glow-text-cyan { text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); }
     .glow-text-gold { text-shadow: 0 0 8px rgba(212, 175, 55, 0.5); }
+    .glow-text-green { text-shadow: 0 0 8px rgba(0, 255, 102, 0.5); }
 
     input[type="range"] { accent-color: #00f0ff; }
 
@@ -354,29 +355,7 @@
             </div>
 
             <div id="multiThrottleControls" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
-        </div>
-
-        <div class="lg:col-span-4 space-y-3 font-mono text-xs">
-          <div class="bg-scDark/80 p-4 rounded border border-scBorder space-y-3">
-            <h3 class="font-orbitron font-bold text-scGold text-sm">Target Rock Parameters</h3>
-            <div class="space-y-2 text-gray-300">
-              <div class="flex justify-between"><span>目標岩石質量:</span><span id="gameTargetMass" class="text-white font-bold">8,000 kg</span></div>
-              <div class="flex justify-between"><span>目標抵抗力:</span><span id="gameTargetRes" class="text-white font-bold">50%</span></div>
-              <div class="flex justify-between"><span>目標不安定さ:</span><span id="gameTargetInst" class="text-scAccent font-bold">45</span></div>
-              <div class="flex justify-between border-t border-scBorder pt-1.5"><span>必要破砕出力:</span><span id="gameReqPower" class="text-scGold font-bold">0 W</span></div>
-              <div class="flex justify-between"><span>最適窓幅補正:</span><span id="gameOptWindow" class="text-scCyan font-bold">0%</span></div>
-              <div class="flex justify-between border-t border-scBorder pt-1.5"><span>現在照射パワー:</span><span id="gameLivePower" class="text-scCyan font-bold">0 W</span></div>
-            </div>
           </div>
-
-          <div class="bg-scDark/80 p-4 rounded border border-scBorder text-center space-y-2">
-            <span class="text-gray-400 text-[11px] block">照射ステータス</span>
-            <div id="gameResultBadge" class="text-lg font-orbitron font-extrabold text-gray-500">READY</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
           <div class="lg:col-span-4 space-y-3 font-mono text-xs">
             <div class="bg-scDark/80 p-4 rounded border border-scBorder space-y-3">
@@ -385,7 +364,9 @@
                 <div class="flex justify-between"><span>目標岩石質量:</span><span id="gameTargetMass" class="text-white font-bold">8,000 kg</span></div>
                 <div class="flex justify-between"><span>目標抵抗力:</span><span id="gameTargetRes" class="text-white font-bold">50%</span></div>
                 <div class="flex justify-between"><span>目標不安定さ:</span><span id="gameTargetInst" class="text-scAccent font-bold">45</span></div>
-                <div class="flex justify-between border-t border-scBorder pt-2"><span>現在照射パワー:</span><span id="gameLivePower" class="text-scCyan font-bold">0 W</span></div>
+                <div class="flex justify-between border-t border-scBorder pt-1.5"><span>必要破砕出力:</span><span id="gameReqPower" class="text-scGold font-bold">0 W</span></div>
+                <div class="flex justify-between"><span>最適窓幅補正:</span><span id="gameOptWindow" class="text-scCyan font-bold">0%</span></div>
+                <div class="flex justify-between border-t border-scBorder pt-1.5"><span>現在照射パワー:</span><span id="gameLivePower" class="text-scCyan font-bold">0 W</span></div>
               </div>
             </div>
 
@@ -426,72 +407,74 @@
   </footer>
 
   <script>
-    // Synced Laser Heads Database
+    // Synced Laser Heads Database with Inert Materials Modifications
+    // Impact I, Helix I, Klein-S1, Hofstede-S1, Lancet MH1, Arbor MH1: -30% (-0.30)
+    // Others: -40% (-0.40)
     const LASER_HEADS = {
-      helix_s1: { id: 'helix_s1', name: 'Helix I Mining Laser', size: 1, power: 3900, minPower: 780, slots: 2, resistance: -0.30, instability: 0.0, optWindow: -0.40, optRange: 15, maxRange: 45, inert: -0.30, optRate: 0 },
-      lancet_s1: { id: 'lancet_s1', name: 'Lancet MH1 Mining Laser', size: 1, power: 3120, minPower: 624, slots: 1, resistance: 0.0, instability: -0.10, optWindow: -0.60, optRange: 30, maxRange: 90, inert: -0.30, optRate: 0.40 },
-      klein_s1: { id: 'klein_s1', name: 'Klein-S1 Mining Laser', size: 1, power: 3120, minPower: 468, slots: 0, resistance: -0.45, instability: 0.35, optWindow: 0.20, optRange: 45, maxRange: 135, inert: -0.30, optRate: 0 },
-      hofstede_s1: { id: 'hofstede_s1', name: 'Hofstede-S1 Mining Laser', size: 1, power: 2600, minPower: 130, slots: 1, resistance: -0.30, instability: 0.10, optWindow: 0.60, optRange: 45, maxRange: 135, inert: -0.30, optRate: 0.20 },
-      impact_s1: { id: 'impact_s1', name: 'Impact I Mining Laser', size: 1, power: 2600, minPower: 520, slots: 2, resistance: 0.10, instability: -0.10, optWindow: 0.20, optRange: 45, maxRange: 135, inert: -0.30, optRate: -0.40 },
-      arbor_s1: { id: 'arbor_s1', name: 'Arbor MH1 Mining Laser', size: 1, power: 2340, minPower: 117, slots: 1, resistance: 0.25, instability: -0.35, optWindow: 0.40, optRange: 60, maxRange: 180, inert: -0.30, optRate: 0 },
-      pitman_s1: { id: 'pitman_s1', name: 'Pitman (Drake Golem)', size: 1, power: 3900, minPower: 780, slots: 2, resistance: 0.25, instability: 0.35, optWindow: 0.40, optRange: 40, maxRange: 45, inert: -0.40, optRate: -0.40 },
+      helix_s1:    { id: 'helix_s1',    name: 'Helix I Mining Laser',   size: 1, power: 3900, minPower: 780,  slots: 2, resistance: -0.30, instability:  0.00, optWindow: -0.40, optRange: 15, maxRange: 45,  inert: -0.30, optRate:  0.00 },
+      lancet_s1:   { id: 'lancet_s1',   name: 'Lancet MH1 Mining Laser', size: 1, power: 3120, minPower: 624,  slots: 1, resistance:  0.00, instability: -0.10, optWindow: -0.60, optRange: 30, maxRange: 90,  inert: -0.30, optRate:  0.40 },
+      klein_s1:    { id: 'klein_s1',    name: 'Klein-S1 Mining Laser',  size: 1, power: 3120, minPower: 468,  slots: 0, resistance: -0.45, instability:  0.35, optWindow:  0.20, optRange: 45, maxRange: 135, inert: -0.30, optRate:  0.00 },
+      hofstede_s1: { id: 'hofstede_s1', name: 'Hofstede-S1 Mining Laser', size: 1, power: 2600, minPower: 130, slots: 1, resistance: -0.30, instability:  0.10, optWindow:  0.60, optRange: 45, maxRange: 135, inert: -0.30, optRate:  0.20 },
+      impact_s1:   { id: 'impact_s1',   name: 'Impact I Mining Laser',  size: 1, power: 2600, minPower: 520,  slots: 2, resistance:  0.10, instability: -0.10, optWindow:  0.20, optRange: 45, maxRange: 135, inert: -0.30, optRate: -0.40 },
+      arbor_s1:    { id: 'arbor_s1',    name: 'Arbor MH1 Mining Laser', size: 1, power: 2340, minPower: 117,  slots: 1, resistance:  0.25, instability: -0.35, optWindow:  0.40, optRange: 60, maxRange: 180, inert: -0.30, optRate:  0.00 },
+      pitman_s1:   { id: 'pitman_s1',   name: 'Pitman (Drake Golem)',   size: 1, power: 3900, minPower: 780,  slots: 2, resistance:  0.25, instability:  0.35, optWindow:  0.40, optRange: 40, maxRange: 45,  inert: -0.40, optRate: -0.40 },
 
-      arbor_s2: { id: 'arbor_s2', name: 'Arbor MH2 Mining Laser', size: 2, power: 2900, minPower: 145, slots: 2, resistance: 0.25, instability: -0.35, optWindow: 0.40, optRange: 90, maxRange: 270, inert: -0.40, optRate: 0 },
-      helix_s2: { id: 'helix_s2', name: 'Helix II Mining Laser', size: 2, power: 4930, minPower: 1479, slots: 3, resistance: -0.30, instability: 0.0, optWindow: -0.40, optRange: 30, maxRange: 90, inert: -0.40, optRate: 0 },
-      lancet_s2: { id: 'lancet_s2', name: 'Lancet MH2 Mining Laser', size: 2, power: 4350, minPower: 1305, slots: 2, resistance: 0.0, instability: -0.10, optWindow: -0.60, optRange: 45, maxRange: 135, inert: -0.40, optRate: 0.40 },
-      hofstede_s2: { id: 'hofstede_s2', name: 'Hofstede-S2 Mining Laser', size: 2, power: 4060, minPower: 406, slots: 2, resistance: -0.30, instability: 0.10, optWindow: 0.60, optRange: 60, maxRange: 180, inert: -0.40, optRate: 0.20 },
-      klein_s2: { id: 'klein_s2', name: 'Klein-S2 Mining Laser', size: 2, power: 4350, minPower: 870, slots: 1, resistance: -0.45, instability: 0.35, optWindow: 0.20, optRange: 60, maxRange: 180, inert: -0.40, optRate: 0 },
-      impact_s2: { id: 'impact_s2', name: 'Impact II Mining Laser', size: 2, power: 4060, minPower: 1218, slots: 3, resistance: 0.10, instability: -0.10, optWindow: 0.20, optRange: 60, maxRange: 180, inert: -0.40, optRate: -0.40 }
+      arbor_s2:    { id: 'arbor_s2',    name: 'Arbor MH2 Mining Laser', size: 2, power: 2900, minPower: 145,  slots: 2, resistance:  0.25, instability: -0.35, optWindow:  0.40, optRange: 90, maxRange: 270, inert: -0.40, optRate:  0.00 },
+      helix_s2:    { id: 'helix_s2',    name: 'Helix II Mining Laser',  size: 2, power: 4930, minPower: 1479, slots: 3, resistance: -0.30, instability:  0.00, optWindow: -0.40, optRange: 30, maxRange: 90,  inert: -0.40, optRate:  0.00 },
+      lancet_s2:   { id: 'lancet_s2',   name: 'Lancet MH2 Mining Laser', size: 2, power: 4350, minPower: 1305, slots: 2, resistance:  0.00, instability: -0.10, optWindow: -0.60, optRange: 45, maxRange: 135, inert: -0.40, optRate:  0.40 },
+      hofstede_s2: { id: 'hofstede_s2', name: 'Hofstede-S2 Mining Laser', size: 2, power: 4060, minPower: 406, slots: 2, resistance: -0.30, instability:  0.10, optWindow:  0.60, optRange: 60, maxRange: 180, inert: -0.40, optRate:  0.20 },
+      klein_s2:    { id: 'klein_s2',    name: 'Klein-S2 Mining Laser',  size: 2, power: 4350, minPower: 870,  slots: 1, resistance: -0.45, instability:  0.35, optWindow:  0.20, optRange: 60, maxRange: 180, inert: -0.40, optRate:  0.00 },
+      impact_s2:   { id: 'impact_s2',   name: 'Impact II Mining Laser', size: 2, power: 4060, minPower: 1218, slots: 3, resistance:  0.10, instability: -0.10, optWindow:  0.20, optRange: 60, maxRange: 180, inert: -0.40, optRate: -0.40 }
     };
 
-    // Fully Synced Modules Database based strictly on SPViewer Screenshots
+    // Fully Synced Modules Database based strictly on SPViewer Specs
     const MODULES = {
       none: { id: 'none', name: 'なし (Empty)', mfg: '-', type: 'Module', charges: 0, duration: 'Passive', powerMod: 0, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
       
       // Passives - Rieger
       rieger_c3: { id: 'rieger_c3', name: 'Rieger-C3 Module', mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0.25, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: -0.01, shatterDmgMod: 0, inertMod: 0 },
       rieger_c2: { id: 'rieger_c2', name: 'Rieger-C2 Module', mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0.20, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: -0.03, shatterDmgMod: 0, inertMod: 0 },
-      rieger: { id: 'rieger', name: 'Rieger Module', mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0.15, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: -0.10, shatterDmgMod: 0, inertMod: 0 },
+      rieger:    { id: 'rieger',    name: 'Rieger Module',    mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0.15, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: -0.10, shatterDmgMod: 0, inertMod: 0 },
       
       // Passives - Torrent
       torrent_3: { id: 'torrent_3', name: 'Torrent III Module', mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0.45, overchRateMod: 0, windowMod: -0.01, shatterDmgMod: 0, inertMod: 0 },
-      torrent_2: { id: 'torrent_2', name: 'Torrent II Module', mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0.35, overchRateMod: 0, windowMod: -0.03, shatterDmgMod: 0, inertMod: 0 },
-      torrent: { id: 'torrent', name: 'Torrent Module', mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0.30, overchRateMod: 0, windowMod: -0.10, shatterDmgMod: 0, inertMod: 0 },
+      torrent_2: { id: 'torrent_2', name: 'Torrent II Module',  mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0.35, overchRateMod: 0, windowMod: -0.03, shatterDmgMod: 0, inertMod: 0 },
+      torrent:   { id: 'torrent',   name: 'Torrent Module',    mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0.30, overchRateMod: 0, windowMod: -0.10, shatterDmgMod: 0, inertMod: 0 },
 
       // Passives - Vaux
       vaux_c3: { id: 'vaux_c3', name: 'Vaux-C3 Module', mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0.25, resMod: 0, instMod: 0, optRateMod: -0.05, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
       vaux_c2: { id: 'vaux_c2', name: 'Vaux-C2 Module', mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0.20, resMod: 0, instMod: 0, optRateMod: -0.15, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
-      vaux: { id: 'vaux', name: 'Vaux Module', mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0.15, resMod: 0, instMod: 0, optRateMod: -0.20, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
+      vaux:    { id: 'vaux',    name: 'Vaux Module',    mfg: 'Shubin Interstellar', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: 0.15, resMod: 0, instMod: 0, optRateMod: -0.20, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
 
       // Passives - Focus
       focus_3: { id: 'focus_3', name: 'Focus III Module', mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: -0.05, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.40, shatterDmgMod: 0, inertMod: 0 },
-      focus_2: { id: 'focus_2', name: 'Focus II Module', mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: -0.10, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.37, shatterDmgMod: 0, inertMod: 0 },
-      focus: { id: 'focus', name: 'Focus Module', mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: -0.15, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.30, shatterDmgMod: 0, inertMod: 0 },
+      focus_2: { id: 'focus_2', name: 'Focus II Module',  mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: -0.10, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.37, shatterDmgMod: 0, inertMod: 0 },
+      focus:   { id: 'focus',   name: 'Focus Module',    mfg: 'Thermyte Concern', type: 'Module', charges: 1, duration: 'Passive', powerMod: -0.15, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.30, shatterDmgMod: 0, inertMod: 0 },
 
       // Passives - XTR
       xtr_xl: { id: 'xtr_xl', name: 'XTR-XL Module', mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.05, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.25, shatterDmgMod: 0, inertMod: -0.06 },
-      xtr_l: { id: 'xtr_l', name: 'XTR-L Module', mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.10, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.22, shatterDmgMod: 0, inertMod: -0.058 },
-      xtr: { id: 'xtr', name: 'XTR Module', mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.15, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.15, shatterDmgMod: 0, inertMod: -0.05 },
+      xtr_l:  { id: 'xtr_l',  name: 'XTR-L Module',  mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.10, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.22, shatterDmgMod: 0, inertMod: -0.058 },
+      xtr:    { id: 'xtr',    name: 'XTR Module',    mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.15, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.15, shatterDmgMod: 0, inertMod: -0.05 },
 
       // Passives - FLTR
       fltr_xl: { id: 'fltr_xl', name: 'FLTR-XL Module', mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.05, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: -0.24 },
-      fltr_l: { id: 'fltr_l', name: 'FLTR-L Module', mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.10, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: -0.23 },
-      fltr: { id: 'fltr', name: 'FLTR Module', mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.15, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: -0.20 },
+      fltr_l:  { id: 'fltr_l',  name: 'FLTR-L Module',  mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.10, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: -0.23 },
+      fltr:    { id: 'fltr',    name: 'FLTR Module',    mfg: 'Greycat Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0, extractMod: -0.15, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: -0.20 },
 
       // Passives - Deluge & Overrun
-      deluge: { id: 'deluge', name: 'Deluge Module', mfg: 'Musashi Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0.15, extractMod: -0.15, resMod: -0.155, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
+      deluge:  { id: 'deluge',  name: 'Deluge Module',  mfg: 'Musashi Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0.15, extractMod: -0.15, resMod: -0.155, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
       overrun: { id: 'overrun', name: 'Overrun Module', mfg: 'Musashi Industrial', type: 'Module', charges: 1, duration: 'Passive', powerMod: 0.02, extractMod: -0.15, resMod: -0.248, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
 
       // Active Modules
-      brand: { id: 'brand', name: 'Brandt Module (Active)', mfg: 'Musashi Industrial', type: 'Module', charges: 5, duration: '60s', powerMod: 0.35, extractMod: 0, resMod: 0.155, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: -0.30, inertMod: 0 },
-      forel: { id: 'forel', name: 'Forel Module (Active)', mfg: 'Shubin Interstellar', type: 'Module', charges: 6, duration: '60s', powerMod: 0, extractMod: 0.50, resMod: 0.155, instMod: 0, optRateMod: 0, overchRateMod: -0.60, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
-      optimum: { id: 'optimum', name: 'Optimum Module (Active)', mfg: 'Greycat Industrial', type: 'Module', charges: 5, duration: '60s', powerMod: -0.15, extractMod: 0, resMod: 0, instMod: -0.10, optRateMod: 0, overchRateMod: -0.80, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
-      torpid: { id: 'torpid', name: 'Torpid Module (Active)', mfg: 'Greycat Industrial', type: 'Module', charges: 5, duration: '60s', powerMod: 0, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0.60, overchRateMod: -0.60, windowMod: 0, shatterDmgMod: 0.40, inertMod: 0 },
-      clearcut: { id: 'clearcut', name: 'Clearcut Module (Active)', mfg: 'Musashi Industrial', type: 'Module', charges: 6, duration: '30s', powerMod: 0.15, extractMod: 0, resMod: 0, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0.30, shatterDmgMod: 0, inertMod: 0 },
-      stampede: { id: 'stampede', name: 'Stampede Module (Active)', mfg: 'Thermyte Concern', type: 'Module', charges: 6, duration: '30s', powerMod: 0.35, extractMod: -0.15, resMod: 0, instMod: -0.10, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: -0.10, inertMod: 0 },
-      rime: { id: 'rime', name: 'Rime Module (Active)', mfg: 'Greycat Industrial', type: 'Module', charges: 10, duration: '20s', powerMod: -0.15, extractMod: 0, resMod: -0.248, instMod: 0, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: -0.10, inertMod: 0 },
-      lifeline: { id: 'lifeline', name: 'Lifeline Module (Active)', mfg: 'Greycat Industrial', type: 'Module', charges: 3, duration: '15s', powerMod: 0, extractMod: 0, resMod: -0.155, instMod: -0.20, optRateMod: 0, overchRateMod: 0.60, windowMod: 0, shatterDmgMod: 0, inertMod: 0 },
-      surge: { id: 'surge', name: 'Surge Module (Active)', mfg: 'Thermyte Concern', type: 'Module', charges: 7, duration: '15s', powerMod: 0.50, extractMod: 0, resMod: -0.155, instMod: 0.10, optRateMod: 0, overchRateMod: 0, windowMod: 0, shatterDmgMod: 0, inertMod: 0 }
+      brand:    { id: 'brand',    name: 'Brandt Module (Active)',   mfg: 'Musashi Industrial', type: 'Module', charges: 5,  duration: '60s', powerMod: 0.35,  extractMod: 0,     resMod: 0.155,  instMod: 0,     optRateMod: 0,    overchRateMod: 0,     windowMod: 0,    shatterDmgMod: -0.30, inertMod: 0 },
+      forel:    { id: 'forel',    name: 'Forel Module (Active)',    mfg: 'Shubin Interstellar', type: 'Module', charges: 6,  duration: '60s', powerMod: 0,     extractMod: 0.50,  resMod: 0.155,  instMod: 0,     optRateMod: 0,    overchRateMod: -0.60, windowMod: 0,    shatterDmgMod: 0,     inertMod: 0 },
+      optimum:  { id: 'optimum',  name: 'Optimum Module (Active)',  mfg: 'Greycat Industrial',  type: 'Module', charges: 5,  duration: '60s', powerMod: -0.15, extractMod: 0,     resMod: 0,      instMod: -0.10, optRateMod: 0,    overchRateMod: -0.80, windowMod: 0,    shatterDmgMod: 0,     inertMod: 0 },
+      torpid:   { id: 'torpid',   name: 'Torpid Module (Active)',   mfg: 'Greycat Industrial',  type: 'Module', charges: 5,  duration: '60s', powerMod: 0,     extractMod: 0,     resMod: 0,      instMod: 0,     optRateMod: 0.60, overchRateMod: -0.60, windowMod: 0,    shatterDmgMod: 0.40,  inertMod: 0 },
+      clearcut: { id: 'clearcut', name: 'Clearcut Module (Active)', mfg: 'Musashi Industrial', type: 'Module', charges: 6,  duration: '30s', powerMod: 0.15,  extractMod: 0,     resMod: 0,      instMod: 0,     optRateMod: 0,    overchRateMod: 0,     windowMod: 0.30, shatterDmgMod: 0,     inertMod: 0 },
+      stampede: { id: 'stampede', name: 'Stampede Module (Active)', mfg: 'Thermyte Concern',   type: 'Module', charges: 6,  duration: '30s', powerMod: 0.35,  extractMod: -0.15, resMod: 0,      instMod: -0.10, optRateMod: 0,    overchRateMod: 0,     windowMod: 0,    shatterDmgMod: -0.10, inertMod: 0 },
+      rime:     { id: 'rime',     name: 'Rime Module (Active)',     mfg: 'Greycat Industrial',  type: 'Module', charges: 10, duration: '20s', powerMod: -0.15, extractMod: 0,     resMod: -0.248, instMod: 0,     optRateMod: 0,    overchRateMod: 0,     windowMod: 0,    shatterDmgMod: -0.10, inertMod: 0 },
+      lifeline: { id: 'lifeline', name: 'Lifeline Module (Active)', mfg: 'Greycat Industrial',  type: 'Module', charges: 3,  duration: '15s', powerMod: 0,     extractMod: 0,     resMod: -0.155, instMod: -0.20, optRateMod: 0,    overchRateMod: 0.60,  windowMod: 0,    shatterDmgMod: 0,     inertMod: 0 },
+      surge:    { id: 'surge',    name: 'Surge Module (Active)',    mfg: 'Thermyte Concern',   type: 'Module', charges: 7,  duration: '15s', powerMod: 0.50,  extractMod: 0,     resMod: -0.155, instMod: 0.10,  optRateMod: 0,    overchRateMod: 0,     windowMod: 0,    shatterDmgMod: 0,     inertMod: 0 }
     };
 
     // Gadgets Database
@@ -526,7 +509,6 @@
     let rockParams = { mass: 8000, res: 50, inst: 45 };
     let practiceGame = { running: false, paused: false, throttles: {}, chargePct: 0, heatPct: 0, status: 'READY' };
 
-    // 装備構成および岩石計算・判定から引き継ぐ連動計算用ステータス
     let calculatedStats = {
       totalLaserPower: 0,
       reqPower: 0,
@@ -539,7 +521,6 @@
       overchRateMod: 0
     };
 
-    // モジュール特性の概要文字列を生成するヘルパー関数
     function getModuleSpecsSummary(m) {
       if (m.id === 'none') return '';
       const parts = [];
@@ -685,6 +666,7 @@
             <div>最適窓: <span class="text-scCyan font-bold">${(lh.optWindow * 100).toFixed(0)}%</span></div>
             <div>抵抗力補正: <span class="${lh.resistance < 0 ? 'text-scGreen' : 'text-scGold'} font-bold">${(lh.resistance * 100).toFixed(0)}%</span></div>
             <div>不安定さ補正: <span class="${lh.instability <= 0 ? 'text-scGreen' : 'text-scAccent'} font-bold">${(lh.instability * 100).toFixed(0)}%</span></div>
+            <div>Inert材削減: <span class="text-scGreen font-bold">${(lh.inert * 100).toFixed(0)}%</span></div>
           </div>
         `;
 
@@ -851,7 +833,6 @@
       const gadgetKey = document.getElementById('gadgetSelect')?.value || 'none';
       const gadget = GADGETS[gadgetKey] || GADGETS.none;
 
-      // ガジェット効果も乗算形式で合算
       totalResFactor *= (1 + gadget.resMod);
       totalInstFactor *= (1 + gadget.instMod);
       totalWindowFactor *= (1 + gadget.windowMod);
@@ -859,11 +840,9 @@
       const effectiveRes = Math.max(0, rockParams.res * totalResFactor);
       const effectiveInst = Math.max(1, Math.round(rockParams.inst * totalInstFactor));
 
-      // 必要破砕出力の計算式: {質量 / (1 - 抵抗値(%))} / 5
       const resFactor = Math.max(0.01, 1 - (effectiveRes / 100));
       const reqPower = Math.round((rockParams.mass / resFactor) / 5);
 
-      // 基本破砕幅(20%)に乗算形式の合成Window Factorを乗算
       const baseWindowRatio = 0.20;
       const effectiveWindowRatio = Math.max(0.02, baseWindowRatio * totalWindowFactor);
       
@@ -896,17 +875,13 @@
 
       const badge = document.getElementById('breakStatusBadge');
       if (badge) {
-        // 出力可変域（[totalMinPower, totalLaserPower]）と最適破砕帯（[optPowerMin, optPowerMax]）の制御可能判定
         if (totalLaserPower < optPowerMin) {
-          // 1. 最大出力でも必要破砕パワーに満たない
           badge.textContent = 'UNBREAKABLE';
           badge.className = 'px-3 py-1 rounded text-xs font-bold font-mono uppercase bg-scRed/20 text-scRed border border-scRed/40';
         } else if (totalMinPower > optPowerMax) {
-          // 2. 最小出力（スロットル最低）に絞っても最適帯上限を超えて過熱してしまう
           badge.textContent = 'TOO POWERFUL';
           badge.className = 'px-3 py-1 rounded text-xs font-bold font-mono uppercase bg-red-600/30 text-red-400 border border-red-500/50';
         } else {
-          // 3. スロットル調整により最適破砕帯（optPowerMin 〜 optPowerMax）へパワーを調整・維持可能！
           badge.textContent = 'BREAKABLE';
           badge.className = 'px-3 py-1 rounded text-xs font-bold font-mono uppercase bg-scGreen/20 text-scGreen border border-scGreen/40 glow-text-green';
         }
@@ -1044,7 +1019,6 @@
 
           document.getElementById('gameLivePower').textContent = `${Math.round(totalLivePower).toLocaleString()} W`;
 
-          // 連動した最新の適正破砕帯パワー（装備および岩石データ）
           const optPowerMin = calculatedStats.optPowerMin || 3000;
           const optPowerMax = calculatedStats.optPowerMax || 3600;
 
@@ -1078,7 +1052,6 @@
             document.getElementById('gaugeMaxLabel').textContent = `危険域: >${Math.round(optPowerMax).toLocaleString()}W`;
           }
 
-          // 乗算形式（Factors）の数値をチャージスピード・過熱スピードに反映
           const chargeSpeed = 0.35 * (calculatedStats.optRateFactor || 1.0);
           const heatSpeed = 0.5 * (calculatedStats.overchRateFactor || 1.0) * (1 + calculatedStats.effectiveInst / 100);
 
@@ -1163,7 +1136,6 @@
       tbody.innerHTML = '';
 
       if (category === 'modules') {
-        // Table headers exactly matching SPViewer Image columns
         thead.innerHTML = `
           <tr class="border-b border-scBorder text-scCyan bg-scDark/50">
             <th class="p-2.5">Name</th>
@@ -1187,11 +1159,10 @@
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-scDark/70 transition';
 
-          const fmt = (v, isRev = false) => {
+          const fmt = (v) => {
             if (v === 0) return '-';
             const pct = (v * 100).toFixed(v % 1 !== 0 && Math.abs(v * 100) % 1 !== 0 ? 1 : 0);
-            const str = `${v > 0 ? '+' : ''}${pct}%`;
-            return str;
+            return `${v > 0 ? '+' : ''}${pct}%`;
           };
 
           tr.innerHTML = `
@@ -1222,6 +1193,7 @@
             <th class="p-2.5">Resistance</th>
             <th class="p-2.5">Instability</th>
             <th class="p-2.5">Optimal Window</th>
+            <th class="p-2.5">Inert Materials</th>
             <th class="p-2.5">Opt / Max Range</th>
           </tr>
         `;
@@ -1240,6 +1212,7 @@
             <td class="p-2.5 ${lh.resistance < 0 ? 'text-scGreen' : 'text-scGold'}">${(lh.resistance * 100).toFixed(0)}%</td>
             <td class="p-2.5 ${lh.instability <= 0 ? 'text-scGreen' : 'text-scAccent'}">${(lh.instability * 100).toFixed(0)}%</td>
             <td class="p-2.5 text-scCyan">${(lh.optWindow * 100).toFixed(0)}%</td>
+            <td class="p-2.5 text-scGreen font-bold">${(lh.inert * 100).toFixed(0)}%</td>
             <td class="p-2.5 text-gray-400">${lh.optRange}m / ${lh.maxRange}m</td>
           `;
           tbody.appendChild(tr);
