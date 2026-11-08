@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSE Annotated Bibliography Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0a3651',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8fafc;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header / Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Brand Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-microscope text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight text-slate-900">BSE Research Review</h1>
+                        <p class="text-xs text-slate-500">Practical English IV 2026 Annotated Bibliography Dashboard</p>
+                    </div>
+                </div>
+
+                <!-- Stats Badges -->
+                <div class="hidden md:flex items-center space-x-6 text-sm text-slate-600">
+                    <div class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-lg">
+                        <i class="fa-solid fa-book-bookmark text-brand-600"></i>
+                        <span class="font-medium text-slate-700">Sources: 3 Articles</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-lg">
+                        <i class="fa-solid fa-clipboard-question text-emerald-600"></i>
+                        <span class="font-medium text-slate-700">RQs & Surveys Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        
+        <!-- Search & Control Bar -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Search Input -->
+            <div class="relative w-full sm:w-96">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" placeholder="Search by keywords, authors, titles..." 
+                    class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+            </div>
+
+            <!-- Tab / Filter Group -->
+            <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
+                <button onclick="setFilter('all')" id="btn-all" class="tab-btn px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-white text-slate-900 shadow-sm">
+                    Show All
+                </button>
+                <button onclick="setFilter('1')" id="btn-1" class="tab-btn px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition-all">
+                    Tokyo Gov. (BSE)
+                </button>
+                <button onclick="setFilter('2')" id="btn-2" class="tab-btn px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition-all">
+                    CDC (vCJD)
+                </button>
+                <button onclick="setFilter('3')" id="btn-3" class="tab-btn px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition-all">
+                    Composting (Nature)
+                </button>
+            </div>
+        </div>
+
+        <!-- Cards Container -->
+        <div id="sourcesContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Card 1 -->
+            <div class="source-card bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden" data-id="1" data-keywords="tokyo public health bse mad cow disease meat and bone meal mbm prion incubation feed regulation">
+                <!-- Card Header -->
+                <div class="p-6 border-b border-slate-100 bg-gradient-to-br from-slate-50 to-white">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/60">
+                            <i class="fa-solid fa-building-columns mr-1.5"></i> Public Health Info
+                        </span>
+                        <a href="https://www.hokeniryo1.metro.tokyo.lg.jp/shokuhin/eng/niku/bse/bse.html" target="_blank" rel="noopener noreferrer" 
+                           class="text-xs text-slate-400 hover:text-brand-600 transition-colors flex items-center gap-1" title="Open Source URL">
+                            <span>URL</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                    <h2 class="font-bold text-slate-900 text-lg leading-snug hover:text-brand-600 transition-colors">
+                        What is bovine spongiform encephalopathy (BSE)?
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
+                        <i class="fa-regular fa-user"></i> Bureau of Public Health, Tokyo Metropolitan Government (Tokyo Food Safety Information Center)
+                    </p>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-6 flex-1 space-y-4 text-sm leading-relaxed">
+                    <!-- Main Arguments -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-amber-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <span>Main Arguments</span>
+                        </div>
+                        <p class="text-slate-700 bg-amber-50/50 p-3 rounded-xl border border-amber-100/80">
+                            BSE is a fatal neurological cattle disease caused by abnormal prions affecting the central nervous system. It details the spread via infected meat-and-bone meal (MBM) and its public health implications.
+                        </p>
+                    </div>
+
+                    <!-- Methodology -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-indigo-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <span>Methodology</span>
+                        </div>
+                        <p class="text-slate-700 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100/80">
+                            Review and synthesis of official public health documentation, epidemiological research, and historical data originating from the UK outbreak.
+                        </p>
+                    </div>
+
+                    <!-- Conclusion -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>Conclusion</span>
+                        </div>
+                        <p class="text-slate-700 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100/80">
+                            Due to the absence of early detection or treatment, strict control over animal feed production and preventing contaminated MBM from entering the agricultural supply chain are essential.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card Footer (Research Questions Button) -->
+                <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                    <span class="text-xs text-slate-400 font-medium">RQ1 & 6 Survey Questions</span>
+                    <button onclick="openModal(1)" class="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 hover:text-brand-600 hover:border-brand-200 rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check text-brand-500"></i> Research Question & Survey
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="source-card bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden" data-id="2" data-keywords="cdc vcjd variant creutzfeldt-jakob disease human impact epidemiology autopsy tissue srm regulatory prevention">
+                <!-- Card Header -->
+                <div class="p-6 border-b border-slate-100 bg-gradient-to-br from-slate-50 to-white">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200/60">
+                            <i class="fa-solid fa-virus-covid mr-1.5"></i> CDC Infectious Disease Info
+                        </span>
+                        <a href="https://www.cdc.gov/variant-creutzfeldt-jakob/about/index.html" target="_blank" rel="noopener noreferrer" 
+                           class="text-xs text-slate-400 hover:text-brand-600 transition-colors flex items-center gap-1" title="Open Source URL">
+                            <span>URL</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                    <h2 class="font-bold text-slate-900 text-lg leading-snug hover:text-brand-600 transition-colors">
+                        About Variant Creutzfeldt-Jakob Disease (vCJD)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
+                        <i class="fa-regular fa-user"></i> Centers for Disease Control and Prevention (CDC) / NCEZID
+                    </p>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-6 flex-1 space-y-4 text-sm leading-relaxed">
+                    <!-- Main Arguments -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-amber-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <span>Main Arguments</span>
+                        </div>
+                        <p class="text-slate-700 bg-amber-50/50 p-3 rounded-xl border border-amber-100/80">
+                            Establishes a strong correlation between human vCJD cases and the consumption of BSE-contaminated beef products, highlighting the success of regulatory suppression.
+                        </p>
+                    </div>
+
+                    <!-- Methodology -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-indigo-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <span>Methodology</span>
+                        </div>
+                        <p class="text-slate-700 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100/80">
+                            Comprehensive analysis of 233 global case reports, epidemiological surveillance data, diagnostic criteria, clinical history, and post-mortem tissue autopsies.
+                        </p>
+                    </div>
+
+                    <!-- Conclusion -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>Conclusion</span>
+                        </div>
+                        <p class="text-slate-700 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100/80">
+                            Feed bans and removing specified risk materials (SRMs) successfully suppressed vCJD, making new cases extremely rare since the early 2000s. Preventive policies are paramount.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card Footer (Research Questions Button) -->
+                <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                    <span class="text-xs text-slate-400 font-medium">RQ2 & 3 Survey Questions</span>
+                    <button onclick="openModal(2)" class="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 hover:text-brand-600 hover:border-brand-200 rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check text-brand-500"></i> Research Question & Survey
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="source-card bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden" data-id="3" data-keywords="nature compost biodegradation microbe specified risk materials srm pmca mouse bioassay shanwei xu">
+                <!-- Card Header -->
+                <div class="p-6 border-b border-slate-100 bg-gradient-to-br from-slate-50 to-white">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                            <i class="fa-solid fa-flask mr-1.5"></i> Nature Scientific Reports
+                        </span>
+                        <a href="https://www.nature.com/articles/s41598-022-26201-2" target="_blank" rel="noopener noreferrer" 
+                           class="text-xs text-slate-400 hover:text-brand-600 transition-colors flex items-center gap-1" title="Open Source URL">
+                            <span>URL</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                    <h2 class="font-bold text-slate-900 text-lg leading-snug hover:text-brand-600 transition-colors">
+                        Biodegradation of bovine spongiform encephalopathy prions in compost
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
+                        <i class="fa-regular fa-user"></i> Shanwei Xu, Sujeema J. Abeysekara, et al.
+                    </p>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-6 flex-1 space-y-4 text-sm leading-relaxed">
+                    <!-- Main Arguments -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-amber-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <span>Main Arguments</span>
+                        </div>
+                        <p class="text-slate-700 bg-amber-50/50 p-3 rounded-xl border border-amber-100/80">
+                            Evaluates aerobic composting as a cost-effective alternative to incineration or alkaline hydrolysis for degrading BSE prions in specified risk materials (SRMs).
+                        </p>
+                    </div>
+
+                    <!-- Methodology -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-indigo-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <span>Methodology</span>
+                        </div>
+                        <p class="text-slate-700 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100/80">
+                            Assessed prion degradation across a 28-day lab-scale system (PMCA assays) and a 106–120-day bin-scale composting system (~2,200 kg) using transgenic mouse bioassays.
+                        </p>
+                    </div>
+
+                    <!-- Conclusion -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>Conclusion</span>
+                        </div>
+                        <p class="text-slate-700 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100/80">
+                            Composting reduces prion contamination risk; however, spatial temperature variations prevent it from consistently reaching the regulatory 5 log10 reduction threshold as a standalone disposal method.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card Footer (Research Questions Button) -->
+                <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                    <span class="text-xs text-slate-400 font-medium">RQ3 & 3 Survey Questions</span>
+                    <button onclick="openModal(3)" class="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 hover:text-brand-600 hover:border-brand-200 rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check text-brand-500"></i> Research Question & Survey
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- No Results Found -->
+        <div id="noResults" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200">
+            <i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 mb-3"></i>
+            <h3 class="text-base font-semibold text-slate-700">No matching research articles found</h3>
+            <p class="text-sm text-slate-400 mt-1">Please try searching with different keywords.</p>
+        </div>
+
+    </div>
+
+    <!-- Modal for Research & Survey Questions -->
+    <div id="questionsModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-brand-500"></span>
+                    <h3 id="modalTitle" class="font-bold text-slate-900 text-base">Research Question (RQ) & Survey Items</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-6 flex-1 text-sm">
+                
+                <!-- Research Question Box -->
+                <div class="bg-brand-50/70 border border-brand-200/80 rounded-xl p-4">
+                    <div class="flex items-center space-x-2 text-brand-800 font-bold text-xs uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <span id="rqLabel">Research Question 1</span>
+                    </div>
+                    <p id="rqContent" class="text-slate-800 font-medium leading-relaxed">
+                        <!-- Dynamic Content -->
+                    </p>
+                </div>
+
+                <!-- Survey Questions List -->
+                <div>
+                    <h4 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-square-poll-vertical text-emerald-600"></i>
+                        <span>Quantitative Survey Questions (Likert Scale: 1-Strongly Disagree to 4-Strongly Agree)</span>
+                    </h4>
+                    <ul id="surveyList" class="space-y-2 text-slate-700">
+                        <!-- Dynamic Content -->
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeModal()" class="px-5 py-2 bg-slate-800 text-white hover:bg-slate-900 rounded-xl text-xs font-semibold transition-colors">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
+            <p>Practical English IV (Fall 2026) - Yuta Yoshida Annotated Bibliography Materials</p>
+            <p>Instructors: Mark Firth & Peter Bellars</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Data for Research Questions and Survey Questions
+        const dataDetails = {
+            1: {
+                title: "Tokyo Public Health Report",
+                rqLabel: "Research Question 1",
+                rq: "How have the feeding of meat-and-bone meal (MBM) to livestock, the interruption of transmission pathways, and appropriate feed regulations contributed to controlling the global spread of BSE and maintaining public health?",
+                survey: [
+                    "1. Brain-degenerating diseases in cattle and humans are extremely serious and often fatal.",
+                    "2. There are diseases where symptoms take several years to appear after initial infection.",
+                    "3. Special proteins (such as prions) that cause disease have stubborn properties that make them difficult to destroy through standard heat or sterilization procedures.",
+                    "4. Thorough management of animal feed is critically important to prevent the spread of animal diseases.",
+                    "5. In the past, specific livestock diseases became major social issues in countries such as the United Kingdom.",
+                    "6. Consuming meat or products from infected animals can pose health risks to humans."
+                ]
+            },
+            2: {
+                title: "CDC (vCJD) Article",
+                rqLabel: "Research Question 2",
+                rq: "What is the correlation between the consumption of BSE-contaminated beef products and the onset of variant Creutzfeldt-Jakob disease (vCJD) in humans, and which regulatory measures have been most effective in suppressing new cases?",
+                survey: [
+                    "1. Strict regulations and safety standards implemented by governments and international organizations have helped drastically reduce new cases.",
+                    "2. Protecting the safety of food supplied to the public requires systems that prevent high-risk tissues from entering distribution.",
+                    "3. For diseases that lack effective treatments once clinical symptoms manifest, preventive measures beforehand are of the utmost importance."
+                ]
+            },
+            3: {
+                title: "Nature Composting Study",
+                rqLabel: "Research Question 3",
+                rq: "To what extent can aerobic composting reduce the infectivity and seeding activity of BSE prions in specified risk materials (SRMs), and can it be practically implemented as an alternative disposal method that meets current regulatory reduction thresholds (such as 5 log10)?",
+                survey: [
+                    "1. Safely processing (degrading and detoxifying) waste that could act as a source of infection is a challenging task in terms of both cost and technology.",
+                    "2. When choosing treatment methods (such as incineration or composting) for medical waste or potentially contaminated materials, environmental impact and cost-effectiveness must be considered.",
+                    "3. For public agencies to officially approve new treatment methods (such as composting), they must clear very strict standards, including specific pathogen reduction thresholds."
+                ]
+            }
+        };
+
+        // Modal Handlers
+        function openModal(id) {
+            const item = dataDetails[id];
+            if (!item) return;
+
+            document.getElementById('modalTitle').innerText = item.title + " - Detailed Requirements";
+            document.getElementById('rqLabel').innerText = item.rqLabel;
+            document.getElementById('rqContent').innerText = item.rq;
+
+            const listEl = document.getElementById('surveyList');
+            listEl.innerHTML = '';
+            item.survey.forEach(q => {
+                const li = document.createElement('li');
+                li.className = "bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs sm:text-sm";
+                li.innerText = q;
+                listEl.appendChild(li);
+            });
+
+            document.getElementById('questionsModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('questionsModal').classList.add('hidden');
+        }
+
+        // Filter Handlers
+        function setFilter(filterId) {
+            // Update button styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition-all";
+            });
+            const activeBtn = document.getElementById(`btn-${filterId}`);
+            if (activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-white text-slate-900 shadow-sm";
+            }
+
+            // Filter cards
+            const cards = document.querySelectorAll('.source-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardId = card.getAttribute('data-id');
+                if (filterId === 'all' || filterId === cardId) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            checkNoResults(visibleCount);
+        }
+
+        // Search Input Filter
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            const query = e.target.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.source-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+
+                if (text.includes(query) || keywords.includes(query)) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            checkNoResults(visibleCount);
+        });
+
+        function checkNoResults(count) {
+            const noResults = document.getElementById('noResults');
+            if (count === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        // Close modal on click outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('questionsModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
